@@ -1,0 +1,127 @@
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+var _jsxFileName = '/Users/vh/Documents/Qkn/Sample/SampleProject/ScatterplotChart.js';
+
+var _react = require('react');
+
+var _react2 = babelHelpers.interopRequireDefault(_react);
+
+var _reactNative = require('react-native');
+
+var _reactNativePathjsCharts = require('react-native-pathjs-charts');
+
+var styles = _reactNative.StyleSheet.create({
+  container: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#f7f7f7'
+  }
+});
+
+var ScatterplotChart = function (_Component) {
+  babelHelpers.inherits(ScatterplotChart, _Component);
+
+  function ScatterplotChart() {
+    babelHelpers.classCallCheck(this, ScatterplotChart);
+    return babelHelpers.possibleConstructorReturn(this, (ScatterplotChart.__proto__ || Object.getPrototypeOf(ScatterplotChart)).apply(this, arguments));
+  }
+
+  babelHelpers.createClass(ScatterplotChart, [{
+    key: 'render',
+    value: function render() {
+      var data = [[{
+        "title": "Amapá",
+        "rating": 10,
+        "episode": 10
+      }, {
+        "title": "Santa Catarina",
+        "rating": 20,
+        "episode": 20
+      }, {
+        "title": "Minas Gerais",
+        "rating": 30,
+        "episode": 30
+      }]];
+
+      var options = {
+        width: 290,
+        height: 290,
+        r: 2,
+        margin: {
+          top: 20,
+          left: 40,
+          bottom: 30,
+          right: 30
+        },
+        fill: "#f09e3e",
+        stroke: "#f09e3e",
+        animate: {
+          type: 'delayed',
+          duration: 200
+        },
+        label: {
+          fontFamily: 'Arial',
+          fontSize: 8,
+          fontWeight: true,
+          fill: '#bec0c1'
+        },
+        axisX: {
+          showAxis: true,
+          showLines: true,
+          showLabels: true,
+          showTicks: false,
+          zeroAxis: false,
+          orient: 'bottom',
+          label: {
+            fontFamily: 'Arial',
+            fontSize: 8,
+            fontWeight: true,
+            fill: '#bec0c1'
+          }
+        },
+        axisY: {
+          showAxis: true,
+          showLines: true,
+          showLabels: true,
+          showTicks: false,
+          zeroAxis: false,
+          orient: 'left',
+          label: {
+            fontFamily: 'Arial',
+            fontSize: 8,
+            fontWeight: true,
+            fill: '#bec0c1'
+          }
+        }
+      };
+
+      return _react2.default.createElement(
+        _reactNative.View,
+        { style: styles.container, __source: {
+            fileName: _jsxFileName,
+            lineNumber: 91
+          }
+        },
+        _react2.default.createElement(_reactNativePathjsCharts.Scatterplot, { data: data, options: options, xKey: 'episode', yKey: 'rating', __source: {
+            fileName: _jsxFileName,
+            lineNumber: 92
+          }
+        })
+      );
+    }
+  }]);
+  return ScatterplotChart;
+}(_react.Component);
+
+ScatterplotChart.navigationOptions = function (_ref) {
+  var navigation = _ref.navigation;
+  return {
+    title: 'Scatterplot - Basic'
+  };
+};
+
+exports.default = ScatterplotChart;

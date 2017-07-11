@@ -1,0 +1,209 @@
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+var _jsxFileName = '/Users/vh/Documents/Qkn/Sample/SampleProject/node_modules/react-native-pathjs-charts/src/Bar.js';
+
+var _react = require('react');
+
+var _react2 = babelHelpers.interopRequireDefault(_react);
+
+var _reactNative = require('react-native');
+
+var _reactNativeSvg = require('react-native-svg');
+
+var _reactNativeSvg2 = babelHelpers.interopRequireDefault(_reactNativeSvg);
+
+var _util = require('./util');
+
+var _lodash = require('lodash');
+
+var _lodash2 = babelHelpers.interopRequireDefault(_lodash);
+
+var _Axis = require('./Axis');
+
+var _Axis2 = babelHelpers.interopRequireDefault(_Axis);
+
+require('babel-polyfill');
+
+var Bar = require('paths-js/bar');
+
+var BarChart = function (_Component) {
+  babelHelpers.inherits(BarChart, _Component);
+
+  function BarChart() {
+    babelHelpers.classCallCheck(this, BarChart);
+    return babelHelpers.possibleConstructorReturn(this, (BarChart.__proto__ || Object.getPrototypeOf(BarChart)).apply(this, arguments));
+  }
+
+  babelHelpers.createClass(BarChart, [{
+    key: 'color',
+    value: function color(i) {
+      var color = this.props.options.color;
+      if (!_lodash2.default.isString(this.props.options.color)) color = color.color;
+      var pallete = this.props.pallete || _util.Colors.mix(color || '#9ac7f7');
+      return _util.Colors.string((0, _util.cyclic)(pallete, i));
+    }
+  }, {
+    key: 'getMaxAndMin',
+    value: function getMaxAndMin(values, scale) {
+      var axisY = this.props.options.axisY;
+      var maxValue = axisY.max || 0;
+      var minValue = axisY.min || 0;
+
+      var max = _lodash2.default.max(values);
+      if (max > maxValue) maxValue = max;
+      var min = _lodash2.default.min(values);
+      if (min < minValue) minValue = min;
+
+      return {
+        minValue: minValue,
+        maxValue: maxValue,
+        min: scale(minValue),
+        max: scale(maxValue)
+      };
+    }
+  }, {
+    key: 'render',
+    value: function render() {
+      var noDataMsg = this.props.noDataMessage || 'No data available';
+      if (this.props.data === undefined) return _react2.default.createElement(
+        _reactNative.Text,
+        {
+          __source: {
+            fileName: _jsxFileName,
+            lineNumber: 104
+          }
+        },
+        noDataMsg
+      );
+
+      var options = new _util.Options(this.props);
+      var accessor = this.props.accessor || (0, _util.identity)(this.props.accessorKey);
+
+      var chart = Bar({
+        data: this.props.data,
+        gutter: this.props.options.gutter || 10,
+        width: options.chartWidth,
+        height: options.chartHeight,
+        accessor: accessor,
+        min: this.props.options.axisY.min || undefined,
+        max: this.props.options.axisY.max || undefined
+      });
+
+      var values = chart.curves.map(function (curve) {
+        return accessor(curve.item);
+      });
+      var chartArea = { x: { minValue: 0, maxValue: 200, min: 0, max: options.chartWidth },
+        y: this.getMaxAndMin(values, chart.scale),
+        margin: options.margin };
+
+      var textStyle = (0, _util.fontAdapt)(options.axisX.label);
+      var labelOffset = this.props.options.axisX.label.offset || 20;
+
+      var lines = chart.curves.map(function (c, i) {
+        var numDataGroups = this.props.data.length || 0;
+        var colorVariationVal = numDataGroups > 1 ? numDataGroups : 3;
+        var color = this.color(i % colorVariationVal);
+        var stroke = _util.Colors.darkenColor(color);
+        return _react2.default.createElement(
+          _reactNativeSvg.G,
+          { key: 'lines' + i, __source: {
+              fileName: _jsxFileName,
+              lineNumber: 133
+            }
+          },
+          _react2.default.createElement(_reactNativeSvg.Path, { d: c.line.path.print(), stroke: stroke, fill: color, __source: {
+              fileName: _jsxFileName,
+              lineNumber: 134
+            }
+          }),
+          options.axisX.showLabels ? _react2.default.createElement(
+            _reactNativeSvg.Text,
+            { fontFamily: textStyle.fontFamily,
+              fontSize: textStyle.fontSize, fontWeight: textStyle.fontWeight, fontStyle: textStyle.fontStyle,
+              fill: textStyle.fill, x: c.line.centroid[0], y: labelOffset + chartArea.y.min,
+              originX: c.line.centroid[0], originY: labelOffset + chartArea.y.min, rotate: textStyle.rotate,
+              textAnchor: 'middle', __source: {
+                fileName: _jsxFileName,
+                lineNumber: 136
+              }
+            },
+            c.item.name
+          ) : null
+        );
+      }, this);
+
+      return _react2.default.createElement(
+        _reactNativeSvg2.default,
+        { width: options.width, height: options.height, __source: {
+            fileName: _jsxFileName,
+            lineNumber: 148
+          }
+        },
+        _react2.default.createElement(
+          _reactNativeSvg.G,
+          { x: options.margin.left, y: options.margin.top, __source: {
+              fileName: _jsxFileName,
+              lineNumber: 149
+            }
+          },
+          _react2.default.createElement(_Axis2.default, { scale: chart.scale, options: options.axisY, chartArea: chartArea, __source: {
+              fileName: _jsxFileName,
+              lineNumber: 150
+            }
+          }),
+          lines
+        )
+      );
+    }
+  }]);
+  return BarChart;
+}(_react.Component);
+
+BarChart.defaultProps = {
+  accessorKey: '',
+  options: {
+    width: 600,
+    height: 600,
+    margin: { top: 20, left: 20, bottom: 50, right: 20 },
+    color: '#2980B9',
+    gutter: 20,
+    animate: {
+      type: 'oneByOne',
+      duration: 200,
+      fillTransition: 3
+    },
+    axisX: {
+      showAxis: true,
+      showLines: true,
+      showLabels: true,
+      showTicks: true,
+      zeroAxis: false,
+      orient: 'bottom',
+      label: {
+        fontFamily: 'Arial',
+        fontSize: 14,
+        bold: true,
+        color: '#34495E',
+        rotate: 45
+      }
+    },
+    axisY: {
+      min: false,
+      max: false,
+      showAxis: true,
+      showLines: true,
+      showLabels: true,
+      showTicks: true,
+      zeroAxis: false,
+      orient: 'left',
+      label: {
+        fontFamily: 'Arial',
+        fontSize: 14,
+        bold: true,
+        color: '#34495E'
+      }
+    }
+  }
+};
+exports.default = BarChart;

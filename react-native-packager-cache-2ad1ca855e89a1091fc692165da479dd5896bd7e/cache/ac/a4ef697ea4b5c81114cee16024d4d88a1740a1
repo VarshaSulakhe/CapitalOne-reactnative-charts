@@ -1,0 +1,6 @@
+
+var $export = require('./_export');
+
+$export($export.S, 'Date', { now: function now() {
+    return new Date().getTime();
+  } });

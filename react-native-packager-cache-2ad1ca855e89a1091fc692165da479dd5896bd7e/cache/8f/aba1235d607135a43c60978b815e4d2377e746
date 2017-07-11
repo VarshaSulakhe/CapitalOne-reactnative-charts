@@ -1,0 +1,183 @@
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+var _jsxFileName = '/Users/vh/Documents/Qkn/Sample/SampleProject/node_modules/react-native-pathjs-charts/src/Radar.js';
+
+var _react = require('react');
+
+var _react2 = babelHelpers.interopRequireDefault(_react);
+
+var _reactNative = require('react-native');
+
+var _reactNativeSvg = require('react-native-svg');
+
+var _reactNativeSvg2 = babelHelpers.interopRequireDefault(_reactNativeSvg);
+
+var _util = require('./util');
+
+require('babel-polyfill');
+
+var Radar = require('paths-js/radar');
+
+
+function accessKeys(keys) {
+  var a = {};
+  for (var i in keys) {
+    var key = keys[i];
+    a[key] = (0, _util.identity)(key);
+  }
+  return a;
+}
+
+var RadarChart = function (_Component) {
+  babelHelpers.inherits(RadarChart, _Component);
+
+  function RadarChart() {
+    babelHelpers.classCallCheck(this, RadarChart);
+    return babelHelpers.possibleConstructorReturn(this, (RadarChart.__proto__ || Object.getPrototypeOf(RadarChart)).apply(this, arguments));
+  }
+
+  babelHelpers.createClass(RadarChart, [{
+    key: 'render',
+    value: function render() {
+      var noDataMsg = this.props.noDataMessage || 'No data available';
+      if (this.props.data === undefined) return _react2.default.createElement(
+        _reactNative.Text,
+        {
+          __source: {
+            fileName: _jsxFileName,
+            lineNumber: 64
+          }
+        },
+        noDataMsg
+      );
+
+      var options = new _util.Options(this.props);
+
+      var x = options.chartWidth / 2;
+      var y = options.chartHeight / 2;
+      var radius = Math.min(x, y);
+
+      var center = this.props.center || [x, y];
+
+      var keys = Object.keys(this.props.data[0]);
+      var chart = Radar({
+        center: this.props.center || [x, y],
+        r: this.props.options.r || radius,
+        data: this.props.data,
+        accessor: this.props.accessor || accessKeys(keys),
+        max: this.props.options.max,
+        rings: this.props.options.rings
+      });
+      var self = this;
+      var colors = (0, _util.styleSvg)({}, self.props.options);
+      var colorsFill = self.props.options.fill;
+      var curves = chart.curves.map(function (c, i) {
+        var color = colorsFill instanceof Array ? colorsFill[i] : colorsFill;
+        return _react2.default.createElement(_reactNativeSvg.Path, { key: i, d: c.polygon.path.print(), fill: color, fillOpacity: 0.6, __source: {
+            fileName: _jsxFileName,
+            lineNumber: 88
+          }
+        });
+      });
+
+      var length = chart.rings.length;
+      var rings = chart.rings.map(function (r, i) {
+        if (i !== length - 1) {
+          return _react2.default.createElement(_reactNativeSvg.Path, { key: 'rings' + i, d: r.path.print(), stroke: colors.stroke, strokeOpacity: colors.strokeOpacity, fill: 'none', __source: {
+              fileName: _jsxFileName,
+              lineNumber: 94
+            }
+          });
+        }
+      });
+
+      var textStyle = (0, _util.fontAdapt)(options.label);
+
+      var labels = chart.rings[length - 1].path.points().map(function (p, i) {
+        return _react2.default.createElement(
+          _reactNativeSvg.G,
+          { key: 'label' + i, __source: {
+              fileName: _jsxFileName,
+              lineNumber: 102
+            }
+          },
+          _react2.default.createElement(_reactNativeSvg.Line, { x1: p[0], y1: p[1], x2: center[0], y2: center[1], stroke: colors.stroke, strokeOpacity: colors.strokeOpacity, __source: {
+              fileName: _jsxFileName,
+              lineNumber: 103
+            }
+          }),
+          _react2.default.createElement(
+            _reactNativeSvg.Text,
+            {
+              fontFamily: textStyle.fontFamily,
+              fontSize: textStyle.fontSize,
+              fontWeight: textStyle.fontWeight,
+              fontStyle: textStyle.fontStyle,
+              fill: textStyle.fill,
+              textAnchor: 'middle', x: Math.floor(p[0]), y: Math.floor(p[1]), __source: {
+                fileName: _jsxFileName,
+                lineNumber: 104
+              }
+            },
+            keys[i]
+          )
+        );
+      });
+
+      return _react2.default.createElement(
+        _reactNativeSvg2.default,
+        { width: options.width, height: options.height, __source: {
+            fileName: _jsxFileName,
+            lineNumber: 117
+          }
+        },
+        _react2.default.createElement(
+          _reactNativeSvg.G,
+          { x: options.margin.left, y: options.margin.top, __source: {
+              fileName: _jsxFileName,
+              lineNumber: 118
+            }
+          },
+          labels,
+          _react2.default.createElement(
+            _reactNativeSvg.G,
+            { x: options.margin.left * -1, y: options.margin.top * -1, __source: {
+                fileName: _jsxFileName,
+                lineNumber: 120
+              }
+            },
+            rings,
+            curves
+          )
+        )
+      );
+    }
+  }]);
+  return RadarChart;
+}(_react.Component);
+
+RadarChart.defaultProps = {
+  options: {
+    width: 600,
+    height: 600,
+    margin: { top: 20, left: 20, right: 20, bottom: 20 },
+    r: 300,
+    max: 150,
+    rings: 3,
+    fill: '#2980B9',
+    stroke: '#2980B9',
+    animate: {
+      type: 'oneByOne',
+      duration: 200,
+      fillTransition: 3
+    },
+    label: {
+      fontFamily: 'Arial',
+      fontSize: 14,
+      bold: true,
+      color: '#34495E'
+    }
+  }
+};
+exports.default = RadarChart;

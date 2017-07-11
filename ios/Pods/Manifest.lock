@@ -1,0 +1,37 @@
+PODS:
+  - React/Core (0.45.1):
+    - Yoga (= 0.45.1.React)
+  - React/RCTImage (0.45.1):
+    - React/Core
+    - React/RCTNetwork
+  - React/RCTNetwork (0.45.1):
+    - React/Core
+  - React/RCTText (0.45.1):
+    - React/Core
+  - React/RCTWebSocket (0.45.1):
+    - React/Core
+  - SimulatorRemoteNotifications (0.0.3)
+  - Yoga (0.45.1.React)
+
+DEPENDENCIES:
+  - React/RCTImage (from `../node_modules/react-native`)
+  - React/RCTNetwork (from `../node_modules/react-native`)
+  - React/RCTText (from `../node_modules/react-native`)
+  - React/RCTWebSocket (from `../node_modules/react-native`)
+  - SimulatorRemoteNotifications (~> 0.0.3)
+  - Yoga (from `../node_modules/react-native/ReactCommon/yoga`)
+
+EXTERNAL SOURCES:
+  React:
+    :path: ../node_modules/react-native
+  Yoga:
+    :path: ../node_modules/react-native/ReactCommon/yoga
+
+SPEC CHECKSUMS:
+  React: 0c9191a8b0c843d7004f950ac6b5f6cba9d125c7
+  SimulatorRemoteNotifications: 1610643e0582b2af67bc254b071ace4077e8ef86
+  Yoga: 89c8738d42a0b46a113acb4e574336d61cba2985
+
+PODFILE CHECKSUM: 125ea34b30a11e438bc7eb78ac66600cd4851258
+
+COCOAPODS: 1.2.1

@@ -1,0 +1,259 @@
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+var _jsxFileName = '/Users/vh/Documents/Qkn/Sample/SampleProject/Axis.js';
+
+var _react = require('react');
+
+var _react2 = babelHelpers.interopRequireDefault(_react);
+
+var _reactNativeSvg = require('react-native-svg');
+
+var _util = require('./util');
+
+var _lodash = require('lodash');
+
+var _lodash2 = babelHelpers.interopRequireDefault(_lodash);
+
+var Pathjs = require('paths-js/path');
+
+var AxisStruct = function () {
+  function AxisStruct(scale, options, chartArea, horizontal) {
+    babelHelpers.classCallCheck(this, AxisStruct);
+
+    this.scale = scale;
+    this.options = options;
+    this.chartArea = chartArea;
+    this.margin = chartArea.margin;
+    this.horizontal = horizontal;
+  }
+
+  babelHelpers.createClass(AxisStruct, [{
+    key: 'axis',
+    value: function axis() {
+      var _this = this;
+
+      var horizontal = this.horizontal;
+      var xAxis = this.chartArea.x;
+      var yAxis = this.chartArea.y;
+      var currentAxis = horizontal ? xAxis : yAxis;
+      var tickInterval = this.options.tickCount || 10;
+      var decimalPlaces = this.options.decimalPlaces || 2;
+      var ticks = this.options.tickValues !== undefined && this.options.tickValues.length !== 0 ? _lodash2.default.map(this.options.tickValues, function (v) {
+        return v.value;
+      }) : AxisStruct.getTickValues(currentAxis, tickInterval, decimalPlaces);
+      var fixed = this.options.zeroAxis ? this.scale(0) : horizontal ? yAxis.min : xAxis.min;
+      var start = { x: horizontal ? xAxis.min : fixed, y: horizontal ? fixed : yAxis.min };
+      var end = { x: horizontal ? xAxis.max : fixed, y: horizontal ? fixed : yAxis.max };
+      var tailLength = this.options.tailLength || 10;
+
+      var margin = this.margin;
+      if (margin !== undefined) {
+        if (horizontal) {
+          start.x += margin.left - tailLength || 0;
+          start.y += margin.top || 0;
+          end.x += margin.left || 0;
+          end.y += margin.top || 0;
+        } else {
+          start.x += margin.left || 0;
+          start.y += margin.top + tailLength || 0;
+          end.x += margin.left || 0;
+          end.y += margin.top - tailLength || 0;
+        }
+      }
+
+      return {
+        item: currentAxis,
+        path: Pathjs().moveto(start).lineto(end).closepath(),
+        ticks: ticks,
+        lines: ticks.map(function (c, i) {
+          var scaleBase = isNaN(c) ? i : c;
+          var lineStart = { x: horizontal ? _this.scale(scaleBase) + margin.left : xAxis.min + margin.left, y: horizontal ? yAxis.min + margin.top : _this.scale(scaleBase) + margin.top };
+          return Pathjs().moveto(lineStart).lineto(horizontal ? lineStart.x : xAxis.max + margin.left, horizontal ? yAxis.max + (margin.top - tailLength) : lineStart.y);
+        }, this)
+      };
+    }
+  }], [{
+    key: 'calcStepSize',
+    value: function calcStepSize(range, targetSteps) {
+      var tempStep = range / targetSteps;
+      var mag = Math.floor(Math.log(tempStep) / Math.log(10));
+      var magPow = Math.pow(10, mag);
+      var magMsd = Math.round(tempStep / magPow + 0.5);
+
+      if (magMsd > 5.0) magMsd = 10.0;else if (magMsd > 2.0) magMsd = 5.0;else if (magMsd > 1.0) magMsd = 2.0;
+
+      return magMsd * magPow;
+    }
+  }, {
+    key: 'roundFloat',
+    value: function roundFloat(floatVal, decimalPlaces) {
+      return Math.round(parseFloat((floatVal * Math.pow(10, decimalPlaces)).toFixed(decimalPlaces))) / Math.pow(10, decimalPlaces);
+    }
+  }, {
+    key: 'getTickValues',
+    value: function getTickValues(axis, tickCount, decimalPlaces) {
+      var tickStep = AxisStruct.calcStepSize(axis.maxValue - axis.minValue, tickCount);
+      var maxTick = axis.minValue + tickCount * tickStep;
+      var tickValues = _lodash2.default.range(axis.minValue, maxTick, tickStep);
+      tickValues = tickValues.map(function (tickValue) {
+        return AxisStruct.roundFloat(tickValue, decimalPlaces);
+      });
+      return tickValues;
+    }
+  }]);
+  return AxisStruct;
+}();
+
+var Axis = function (_Component) {
+  babelHelpers.inherits(Axis, _Component);
+
+  function Axis() {
+    babelHelpers.classCallCheck(this, Axis);
+    return babelHelpers.possibleConstructorReturn(this, (Axis.__proto__ || Object.getPrototypeOf(Axis)).apply(this, arguments));
+  }
+
+  babelHelpers.createClass(Axis, [{
+    key: 'render',
+    value: function render() {
+      console.log("Axis");
+      var _props = this.props,
+          chartArea = _props.chartArea,
+          options = _props.options,
+          scale = _props.scale;
+
+      var horizontal = options.orient === 'top' || options.orient === 'bottom';
+
+      var axis = new AxisStruct(scale, options, chartArea, horizontal).axis();
+
+      var textAnchor = 'start';
+      if (options.orient === 'top' || options.orient === 'bottom') textAnchor = 'middle';
+      if (options.orient === 'left') textAnchor = 'end';
+      if (options.orient === 'right') textAnchor = 'start';
+
+      var xy = [0, 0];
+      if (options.orient === 'top') xy = [0, -5];
+      if (options.orient === 'bottom') xy = [0, 5];
+      if (options.orient === 'left') xy = [-5, -10];
+      if (options.orient === 'right') xy = [5, 5];
+
+      if (typeof options.color !== 'string') {
+        options.color = '#bec0c1';
+      }
+
+      if (typeof options.gridColor !== 'string') {
+        options.gridColor = '#bec0c1';
+      }
+
+      if (typeof options.opacity !== 'number') {
+        options.opacity = 0.5;
+      }
+
+      if (typeof options.strokeWidth !== 'number') {
+        options.strokeWidth = 6;
+      }
+
+      if (typeof options.tickSize !== 'number') {
+        options.tickSize = 2;
+      }
+
+      if (typeof options.tickColor !== 'string') {
+        options.tickColor = 'grey';
+      }
+
+      var textStyle = (0, _util.fontAdapt)(options.label);
+
+      var ticks = _lodash2.default.map(axis.ticks, function (c, i) {
+        var label = options.labelFunction !== undefined ? options.labelFunction.apply(this, [c]) : c;
+        var scaleBase = isNaN(c) ? i : c;
+        var gxy = horizontal ? [scale(scaleBase), chartArea.y.min] : [chartArea.x.min, scale(scaleBase)];
+
+        var returnValue = void 0;
+        if (label !== undefined && label !== null) {
+          returnValue = _react2.default.createElement(
+            _reactNativeSvg.G,
+            { key: i, x: gxy[0], y: gxy[1], __source: {
+                fileName: _jsxFileName,
+                lineNumber: 163
+              }
+            },
+            options.showTicks && _react2.default.createElement(_reactNativeSvg.Circle, { r: options.tickSize, cx: '0', cy: '0', stroke: options.tickColor, fill: options.tickColor, __source: {
+                fileName: _jsxFileName,
+                lineNumber: 165
+              }
+            }),
+            options.showLabels && _react2.default.createElement(
+              _reactNativeSvg.Text,
+              { x: xy[0], y: xy[1],
+                fontFamily: textStyle.fontFamily,
+                fontSize: textStyle.fontSize,
+                fontWeight: textStyle.fontWeight,
+                fontStyle: textStyle.fontStyle,
+                fill: textStyle.fill,
+                textAnchor: textAnchor, __source: {
+                  fileName: _jsxFileName,
+                  lineNumber: 168
+                }
+              },
+              label
+            )
+          );
+        }
+
+        return returnValue;
+      });
+
+      var gridLines = options.showLines ? _lodash2.default.map(axis.lines, function (c, i) {
+
+        return _react2.default.createElement(_reactNativeSvg.Path, { key: 'gridLines' + i, d: c.print(), strokeOpacity: options.opacity, stroke: options.gridColor, fill: 'none', __source: {
+            fileName: _jsxFileName,
+            lineNumber: 188
+          }
+        });
+      }) : [];
+
+      var offset = {
+        x: chartArea.margin.left * -1,
+        y: chartArea.margin.top * -1
+      };
+
+      var returnV = _react2.default.createElement(
+        _reactNativeSvg.G,
+        {
+          __source: {
+            fileName: _jsxFileName,
+            lineNumber: 199
+          }
+        },
+        _react2.default.createElement(
+          _reactNativeSvg.G,
+          { x: offset.x, y: offset.y, __source: {
+              fileName: _jsxFileName,
+              lineNumber: 200
+            }
+          },
+          options.showAxis ? _react2.default.createElement(_reactNativeSvg.Path, { d: axis.path.print(), strokeOpacity: options.opacity, stroke: options.color, strokeWidth: options.strokeWidth, fill: 'none', __source: {
+              fileName: _jsxFileName,
+              lineNumber: 201
+            }
+          }) : null
+        ),
+        ticks,
+        _react2.default.createElement(
+          _reactNativeSvg.G,
+          { x: offset.x, y: offset.y, __source: {
+              fileName: _jsxFileName,
+              lineNumber: 204
+            }
+          },
+          gridLines
+        )
+      );
+
+      return returnV;
+    }
+  }]);
+  return Axis;
+}(_react.Component);
+
+exports.default = Axis;

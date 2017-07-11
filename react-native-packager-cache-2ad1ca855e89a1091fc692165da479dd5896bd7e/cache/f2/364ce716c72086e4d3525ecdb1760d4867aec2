@@ -1,0 +1,63 @@
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _Line = require('./Line.js');
+
+var _Line2 = babelHelpers.interopRequireDefault(_Line);
+
+var StockLine = require('paths-js/stock');
+
+var StockLineChart = function (_LineChart) {
+  babelHelpers.inherits(StockLineChart, _LineChart);
+
+  function StockLineChart(props) {
+    babelHelpers.classCallCheck(this, StockLineChart);
+    return babelHelpers.possibleConstructorReturn(this, (StockLineChart.__proto__ || Object.getPrototypeOf(StockLineChart)).call(this, props, StockLine));
+  }
+
+  return StockLineChart;
+}(_Line2.default);
+
+StockLineChart.defaultProps = {
+  options: {
+    width: 600,
+    height: 600,
+    color: '#2980B9',
+    margin: { top: 40, left: 60, bottom: 50, right: 20 },
+    animate: {
+      type: 'delayed',
+      duration: 200,
+      fillTransition: 3
+    },
+    axisX: {
+      showAxis: true,
+      showLines: true,
+      showLabels: true,
+      showTicks: true,
+      zeroAxis: false,
+      orient: 'bottom',
+      label: {
+        fontFamily: 'Arial',
+        fontSize: 14,
+        bold: true,
+        color: '#34495E'
+      }
+    },
+    axisY: {
+      showAxis: true,
+      showLines: true,
+      showLabels: true,
+      showTicks: true,
+      zeroAxis: false,
+      orient: 'left',
+      label: {
+        fontFamily: 'Arial',
+        fontSize: 14,
+        bold: true,
+        color: '#34495E'
+      }
+    }
+  }
+};
+exports.default = StockLineChart;

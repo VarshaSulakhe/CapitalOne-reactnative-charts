@@ -1,0 +1,169 @@
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+var _jsxFileName = '/Users/vh/Documents/Qkn/Sample/SampleProject/node_modules/react-native-pathjs-charts/src/Tree.js';
+
+var _react = require('react');
+
+var _react2 = babelHelpers.interopRequireDefault(_react);
+
+var _reactNative = require('react-native');
+
+var _reactNativeSvg = require('react-native-svg');
+
+var _reactNativeSvg2 = babelHelpers.interopRequireDefault(_reactNativeSvg);
+
+var _util = require('./util');
+
+var _lodash = require('lodash');
+
+var _lodash2 = babelHelpers.interopRequireDefault(_lodash);
+
+require('babel-polyfill');
+
+var Tree = require('paths-js/tree');
+
+
+function children(x) {
+  if (x.collapsed) {
+    return [];
+  } else {
+    return x.children || [];
+  }
+}
+
+var TreeChart = function (_Component) {
+  babelHelpers.inherits(TreeChart, _Component);
+
+  function TreeChart() {
+    babelHelpers.classCallCheck(this, TreeChart);
+    return babelHelpers.possibleConstructorReturn(this, (TreeChart.__proto__ || Object.getPrototypeOf(TreeChart)).apply(this, arguments));
+  }
+
+  babelHelpers.createClass(TreeChart, [{
+    key: 'render',
+    value: function render() {
+      var noDataMsg = this.props.noDataMessage || 'No data available';
+      if (this.props.data === undefined) return _react2.default.createElement(
+        _reactNative.Text,
+        {
+          __source: {
+            fileName: _jsxFileName,
+            lineNumber: 62
+          }
+        },
+        noDataMsg
+      );
+
+      var options = new _util.Options(this.props);
+      var tree = Tree({
+        data: this.props.data,
+        children: children,
+        width: options.chartWidth,
+        height: options.chartHeight
+      });
+      var colors = (0, _util.styleSvg)({}, options);
+      var curves = _lodash2.default.map(tree.curves, function (c, i) {
+        return _react2.default.createElement(_reactNativeSvg.Path, { key: 'curves_' + i, d: c.connector.path.print(), fill: 'none', stroke: colors.stroke, strokeOpacity: colors.strokeOpacity, __source: {
+            fileName: _jsxFileName,
+            lineNumber: 73
+          }
+        });
+      });
+
+      var fillOpacityStyle = 1;
+      var textStyle = (0, _util.fontAdapt)(options.label);
+      var r = options.r || 5;
+      var nodes = _lodash2.default.map(tree.nodes, function (n, index) {
+
+        var text = void 0;
+
+        if (children(n.item).length > 0) {
+          text = _react2.default.createElement(
+            _reactNativeSvg.Text,
+            { fontFamily: textStyle.fontFamily,
+              fontSize: textStyle.fontSize,
+              fontWeight: textStyle.fontWeight,
+              fontStyle: textStyle.fontStyle, x: -10, y: -10, textAnchor: 'end', __source: {
+                fileName: _jsxFileName,
+                lineNumber: 84
+              }
+            },
+            n.item.name
+          );
+        } else {
+          text = _react2.default.createElement(
+            _reactNativeSvg.Text,
+            { fontFamily: textStyle.fontFamily,
+              fontSize: textStyle.fontSize,
+              fontWeight: textStyle.fontWeight,
+              fontStyle: textStyle.fontStyle, x: 10, y: -10, textAnchor: 'start', __source: {
+                fileName: _jsxFileName,
+                lineNumber: 89
+              }
+            },
+            n.item.name
+          );
+        }
+
+        return _react2.default.createElement(
+          _reactNativeSvg.G,
+          { key: 'tree_' + index, x: n.point[0], y: n.point[1], __source: {
+              fileName: _jsxFileName,
+              lineNumber: 95
+            }
+          },
+          _react2.default.createElement(_reactNativeSvg.Circle, babelHelpers.extends({ fillOpacity: fillOpacityStyle }, colors, { r: r, cx: '0', cy: '0', __source: {
+              fileName: _jsxFileName,
+              lineNumber: 96
+            }
+          })),
+          text
+        );
+      });
+
+      return _react2.default.createElement(
+        _reactNativeSvg2.default,
+        { width: options.width, height: options.height, __source: {
+            fileName: _jsxFileName,
+            lineNumber: 102
+          }
+        },
+        _react2.default.createElement(
+          _reactNativeSvg.G,
+          { x: options.margin.left, y: options.margin.top, __source: {
+              fileName: _jsxFileName,
+              lineNumber: 103
+            }
+          },
+          curves,
+          nodes
+        )
+      );
+    }
+  }]);
+  return TreeChart;
+}(_react.Component);
+
+TreeChart.defaultProps = {
+  options: {
+    margin: { top: 20, left: 50, right: 80, bottom: 20 },
+    width: 600,
+    height: 600,
+    fill: '#2980B9',
+    stroke: '#3E90F0',
+    r: 5,
+    animate: {
+      type: 'oneByOne',
+      duration: 200,
+      fillTransition: 3
+    },
+    label: {
+      fontFamily: 'Arial',
+      fontSize: 14,
+      bold: true,
+      fill: '#34495E'
+    }
+  }
+};
+exports.default = TreeChart;

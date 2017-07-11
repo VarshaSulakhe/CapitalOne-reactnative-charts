@@ -1,0 +1,130 @@
+
+
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+var _jsxFileName = '/Users/vh/Documents/Qkn/Sample/SampleProject/StockLineChartStaticTickLabels.js';
+
+var _react = require('react');
+
+var _react2 = babelHelpers.interopRequireDefault(_react);
+
+var _reactNative = require('react-native');
+
+var _StockLine = require('./StockLine');
+
+var _StockLine2 = babelHelpers.interopRequireDefault(_StockLine);
+
+var styles = _reactNative.StyleSheet.create({
+  container: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#f7f7f7'
+  }
+});
+
+var StockLineChartStaticTickLabels = function (_Component) {
+  babelHelpers.inherits(StockLineChartStaticTickLabels, _Component);
+
+  function StockLineChartStaticTickLabels() {
+    babelHelpers.classCallCheck(this, StockLineChartStaticTickLabels);
+    return babelHelpers.possibleConstructorReturn(this, (StockLineChartStaticTickLabels.__proto__ || Object.getPrototypeOf(StockLineChartStaticTickLabels)).apply(this, arguments));
+  }
+
+  babelHelpers.createClass(StockLineChartStaticTickLabels, [{
+    key: 'render',
+    value: function render() {
+      var data = [[{
+        "x": 0,
+        "y": 477
+      }, {
+        "x": 2,
+        "y": 771
+      }, {
+        "x": 3,
+        "y": 731
+      }, {
+        "x": 4,
+        "y": 582
+      }, {
+        "x": 5,
+        "y": 405
+      }, {
+        "x": 6,
+        "y": 100
+      }]];
+      var options = {
+        width: 250,
+        height: 250,
+        color: '#2980B9',
+        margin: {
+          top: 10,
+          left: 35,
+          bottom: 30,
+          right: 10
+        },
+        animate: {
+          type: 'delayed',
+          duration: 200
+        },
+        axisX: {
+          showAxis: true,
+          showLines: true,
+          showLabels: true,
+          showTicks: true,
+          zeroAxis: false,
+          orient: 'bottom',
+          tickValues: [{ value: 'JAN' }, { value: 'FEB' }, { value: 'MAR' }, { value: 'APR' }, { value: 'MAY' }, { value: 'JUN' }, { value: 'JUL' }, { value: 'AUG' }, { value: 'SEP' }, { value: 'OCT' }, { value: 'NOV' }, { value: 'DEC' }],
+          label: {
+            fontFamily: 'Arial',
+            fontSize: 8,
+            fontWeight: true,
+            fill: '#34495E'
+          }
+        },
+        axisY: {
+          showAxis: true,
+          showLines: true,
+          showLabels: true,
+          showTicks: true,
+          zeroAxis: false,
+          orient: 'left',
+          tickValues: [],
+          label: {
+            fontFamily: 'Arial',
+            fontSize: 8,
+            fontWeight: true,
+            fill: '#34495E'
+          }
+        }
+      };
+
+      return _react2.default.createElement(
+        _reactNative.View,
+        { style: styles.container, __source: {
+            fileName: _jsxFileName,
+            lineNumber: 120
+          }
+        },
+        _react2.default.createElement(_StockLine2.default, { data: data, options: options, xKey: 'x', yKey: 'y', __source: {
+            fileName: _jsxFileName,
+            lineNumber: 121
+          }
+        })
+      );
+    }
+  }]);
+  return StockLineChartStaticTickLabels;
+}(_react.Component);
+
+StockLineChartStaticTickLabels.navigationOptions = function (_ref) {
+  var navigation = _ref.navigation;
+  return {
+    title: 'StockLine - Static Labels'
+  };
+};
+
+exports.default = StockLineChartStaticTickLabels;

@@ -1,0 +1,139 @@
+var _jsxFileName = '/Users/vh/Documents/Qkn/Sample/SampleProject/index.android.js';
+
+var _react = require('react');
+
+var _react2 = babelHelpers.interopRequireDefault(_react);
+
+var _reactNative = require('react-native');
+
+var _reactNavigation = require('react-navigation');
+
+var _ScatterplotChart = require('./ScatterplotChart');
+
+var _ScatterplotChart2 = babelHelpers.interopRequireDefault(_ScatterplotChart);
+
+var _StockLineExample = require('./StockLineExample');
+
+var _StockLineExample2 = babelHelpers.interopRequireDefault(_StockLineExample);
+
+var _StockLineChartStaticTickLabels = require('./StockLineChartStaticTickLabels');
+
+var _StockLineChartStaticTickLabels2 = babelHelpers.interopRequireDefault(_StockLineChartStaticTickLabels);
+
+var _StockLineChartDynamicTickLabels = require('./StockLineChartDynamicTickLabels');
+
+var _StockLineChartDynamicTickLabels2 = babelHelpers.interopRequireDefault(_StockLineChartDynamicTickLabels);
+
+var HomeScreen = function (_React$Component) {
+  babelHelpers.inherits(HomeScreen, _React$Component);
+
+  function HomeScreen() {
+    babelHelpers.classCallCheck(this, HomeScreen);
+    return babelHelpers.possibleConstructorReturn(this, (HomeScreen.__proto__ || Object.getPrototypeOf(HomeScreen)).apply(this, arguments));
+  }
+
+  babelHelpers.createClass(HomeScreen, [{
+    key: 'render',
+    value: function render() {
+      var navigate = this.props.navigation.navigate;
+
+      return _react2.default.createElement(
+        _reactNative.View,
+        {
+          __source: {
+            fileName: _jsxFileName,
+            lineNumber: 23
+          }
+        },
+        _react2.default.createElement(_reactNative.Button, {
+          style: styles.container,
+          title: 'Scatter Plot Chart',
+          onPress: function onPress() {
+            return navigate('SChart');
+          },
+          __source: {
+            fileName: _jsxFileName,
+            lineNumber: 24
+          }
+        }),
+        _react2.default.createElement(_reactNative.Button, {
+          style: styles.container,
+          title: 'Stockline chart',
+          onPress: function onPress() {
+            return navigate('StChart');
+          },
+          __source: {
+            fileName: _jsxFileName,
+            lineNumber: 32
+          }
+        }),
+        _react2.default.createElement(_reactNative.Button, {
+          style: styles.container,
+          title: 'Stocklinedynamic chart',
+          onPress: function onPress() {
+            return navigate('StdChart');
+          },
+          __source: {
+            fileName: _jsxFileName,
+            lineNumber: 39
+          }
+        }),
+        _react2.default.createElement(_reactNative.Button, {
+          style: styles.container,
+          title: 'Stocklinestatic chart',
+          onPress: function onPress() {
+            return navigate('StsChart');
+          },
+          __source: {
+            fileName: _jsxFileName,
+            lineNumber: 46
+          }
+        }),
+        _react2.default.createElement(_reactNative.Button, {
+          style: styles.container,
+          title: 'Reload react native',
+          onPress: function onPress() {
+
+            return cosole.warn("Hi");
+          },
+          __source: {
+            fileName: _jsxFileName,
+            lineNumber: 54
+          }
+        })
+      );
+    }
+  }]);
+  return HomeScreen;
+}(_react2.default.Component);
+
+HomeScreen.navigationOptions = {
+  title: 'Home'
+};
+
+
+var SimpleApp = (0, _reactNavigation.StackNavigator)({
+  Home: { screen: HomeScreen },
+  SChart: { screen: _ScatterplotChart2.default },
+  StChart: { screen: _StockLineExample2.default },
+  StdChart: { screen: _StockLineChartDynamicTickLabels2.default },
+  StsChart: { screen: _StockLineChartStaticTickLabels2.default }
+
+});
+var styles = _reactNative.StyleSheet.create({
+  container: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#f7f7f7'
+  },
+  viewContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center'
+  }
+});
+
+_reactNative.AppRegistry.registerComponent('SimpleApp', function () {
+  return SimpleApp;
+});

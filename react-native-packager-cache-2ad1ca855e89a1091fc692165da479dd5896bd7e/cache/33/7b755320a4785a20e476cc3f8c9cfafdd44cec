@@ -1,0 +1,329 @@
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+var _jsxFileName = '/Users/vh/Documents/Qkn/Sample/SampleProject/node_modules/react-native-pathjs-charts/src/Line.js';
+
+var _react = require('react');
+
+var _react2 = babelHelpers.interopRequireDefault(_react);
+
+var _reactNative = require('react-native');
+
+var _reactNativeSvg = require('react-native-svg');
+
+var _reactNativeSvg2 = babelHelpers.interopRequireDefault(_reactNativeSvg);
+
+var _util = require('./util');
+
+var _Axis = require('./Axis');
+
+var _Axis2 = babelHelpers.interopRequireDefault(_Axis);
+
+var _lodash = require('lodash');
+
+var _lodash2 = babelHelpers.interopRequireDefault(_lodash);
+
+var LineChart = function (_Component) {
+  babelHelpers.inherits(LineChart, _Component);
+
+  function LineChart(props, chartType) {
+    babelHelpers.classCallCheck(this, LineChart);
+
+    var _this = babelHelpers.possibleConstructorReturn(this, (LineChart.__proto__ || Object.getPrototypeOf(LineChart)).call(this, props));
+
+    _this.chartType = chartType;
+    _this.state = { x: 0, y: 0, start: false };
+    return _this;
+  }
+
+  babelHelpers.createClass(LineChart, [{
+    key: 'getMaxAndMin',
+    value: function getMaxAndMin(chart, key, scale, chartMin, chartMax) {
+      var maxValue = void 0;
+      var minValue = void 0;
+      _lodash2.default.each(chart.curves, function (serie) {
+        var values = _lodash2.default.map(serie.item, function (item) {
+          return item[key];
+        });
+
+        var max = _lodash2.default.max(values);
+        if (maxValue === undefined || max > maxValue) maxValue = max;
+        var min = _lodash2.default.min(values);
+        if (minValue === undefined || min < minValue) minValue = min;
+
+        maxValue = chartMax > maxValue ? chartMax : maxValue;
+        minValue = chartMin < minValue ? chartMin : minValue;
+      });
+
+      return {
+        minValue: minValue,
+        maxValue: maxValue,
+        min: scale(minValue),
+        max: scale(maxValue)
+      };
+    }
+  }, {
+    key: 'color',
+    value: function color(i) {
+      var color = this.props.options.color;
+      if (!_lodash2.default.isString(this.props.options.color)) color = color.color;
+      var pallete = this.props.pallete || _util.Colors.mix(color || '#9ac7f7');
+      return _util.Colors.string((0, _util.cyclic)(pallete, i));
+    }
+  }, {
+    key: 'componentWillMount',
+    value: function componentWillMount() {
+      var _this2 = this;
+
+      this._panResponder = _reactNative.PanResponder.create({
+        onStartShouldSetPanResponder: function onStartShouldSetPanResponder(evt, gestureState) {
+          return true;
+        },
+        onStartShouldSetPanResponderCapture: function onStartShouldSetPanResponderCapture(evt, gestureState) {
+          return true;
+        },
+        onMoveShouldSetPanResponder: function onMoveShouldSetPanResponder(evt, gestureState) {
+          return true;
+        },
+        onMoveShouldSetPanResponderCapture: function onMoveShouldSetPanResponderCapture(evt, gestureState) {
+          return true;
+        },
+        onPanResponderGrant: function onPanResponderGrant() {
+          console.log('-------onPanResponderGrant------');
+        },
+        onPanResponderMove: function onPanResponderMove(evt, gs) {
+          console.log("onPanResponderRelease " + gs.dx + ' ' + gs.dy);
+          _this2.setState({ x: gs.dx, y: gs.dy });
+        },
+        onPanResponderTerminationRequest: function onPanResponderTerminationRequest(evt, gestureState) {
+          return true;
+        },
+        onPanResponderRelease: function onPanResponderRelease(evt, gs) {
+          console.log("pan : " + gs.dx + ' ' + gs.dy);
+          _this2.setState({ x: gs.dx, y: gs.dy });
+        },
+        onShouldBlockNativeResponder: function onShouldBlockNativeResponder(evt, gestureState) {
+          return true;
+        }
+      });
+    }
+  }, {
+    key: 'render',
+    value: function render() {
+      var noDataMsg = this.props.noDataMessage || 'No data available';
+      if (this.props.data === undefined) return _react2.default.createElement(
+        _reactNative.Text,
+        {
+          __source: {
+            fileName: _jsxFileName,
+            lineNumber: 95
+          }
+        },
+        noDataMsg
+      );
+
+      var options = new _util.Options(this.props);
+
+      var accessor = function accessor(key) {
+        return function (x) {
+          return x[key];
+        };
+      };
+
+      var chart = this.chartType({
+        data: this.props.data,
+        xaccessor: accessor(this.props.xKey),
+        yaccessor: accessor(this.props.yKey),
+        width: options.chartWidth,
+        height: options.chartHeight,
+        closed: false,
+        min: options.min,
+        max: options.max
+      });
+
+      var chartArea = {
+        x: this.getMaxAndMin(chart, this.props.xKey, chart.xscale),
+        y: this.getMaxAndMin(chart, this.props.yKey, chart.yscale, options.min, options.max),
+        margin: options.margin
+      };
+
+      var showAreas = typeof this.props.options.showAreas !== 'undefined' ? this.props.options.showAreas : true;
+      var strokeWidth = typeof this.props.options.strokeWidth !== 'undefined' ? this.props.options.strokeWidth : '1';
+      var lines = _lodash2.default.map(chart.curves, function (c, i) {
+        console.log("Lines");
+
+        console.log(c.line.path.connect);
+
+        return _react2.default.createElement(_reactNativeSvg.Path, { key: 'lines' + i, d: c.line.path.print(), stroke: this.color(i), strokeWidth: strokeWidth, fill: 'none', onPress: function onPress() {
+            return console.log('Press on path');
+          }, __source: {
+            fileName: _jsxFileName,
+            lineNumber: 129
+          }
+        });
+      }.bind(this));
+      var areas = null;
+      var size = chart.curves[0].item.length;
+      var circles = _lodash2.default.map(chart.curves[0].item, function (item, i) {
+        console.log("i : " + i);
+        console.log("size : " + size);
+        if (size == i + 1) {
+
+          if (this.state.start == false) {
+            this.state.x = chart.xscale(item.x);
+            this.state.y = chart.yscale(item.y);
+            this.state.start = true;
+            console.log("changing inside start ");
+          }
+          console.log("x new value " + this.state.x);
+          console.log("y new value " + this.state.y);
+
+          return _react2.default.createElement(
+            _reactNativeSvg.G,
+            babelHelpers.extends({}, this._panResponder.panHandlers, {
+              __source: {
+                fileName: _jsxFileName,
+                lineNumber: 147
+              }
+            }),
+            _react2.default.createElement(_reactNativeSvg.Line, { x1: 0, y1: this.state.y, x2: chart.xscale(item.x), y2: this.state.y, stroke: 'black', strokeWidth: '2', __source: {
+                fileName: _jsxFileName,
+                lineNumber: 149
+              }
+            }),
+            _react2.default.createElement(_reactNativeSvg.Circle, {
+              cx: chart.xscale(item.x), cy: this.state.y, r: '10', fill: 'orange', onPress: function onPress() {
+                return console.log('Press on Circle');
+              }, __source: {
+                fileName: _jsxFileName,
+                lineNumber: 150
+              }
+            })
+          );
+        } else {
+          return _react2.default.createElement(_reactNativeSvg.Circle, {
+            cx: chart.xscale(item.x), cy: chart.yscale(item.y), r: '10', fill: 'orange', onPress: function onPress() {
+              return console.log('Press on Circle');
+            }, __source: {
+              fileName: _jsxFileName,
+              lineNumber: 158
+            }
+          });
+        }
+      }.bind(this));
+
+      if (showAreas) {
+        areas = _lodash2.default.map(chart.curves, function (c, i) {
+          return _react2.default.createElement(_reactNativeSvg.Path, { key: 'areas' + i, d: c.area.path.print(), fillOpacity: 0.5, stroke: 'none', fill: this.color(i), __source: {
+              fileName: _jsxFileName,
+              lineNumber: 165
+            }
+          });
+        }.bind(this));
+      }
+
+      var textStyle = (0, _util.fontAdapt)(options.label);
+      var regions = void 0;
+      if (this.props.regions != 'undefined') {
+        var styling = typeof this.props.regionStyling != 'undefined' ? this.props.regionStyling : {};
+        var labelOffsetAllRegions = typeof styling.labelOffset != 'undefined' ? styling.labelOffset : {};
+
+        regions = _lodash2.default.map(this.props.regions, function (c, i) {
+          var x = void 0,
+              y = void 0,
+              height = void 0,
+              width = void 0,
+              y1 = void 0,
+              y2 = void 0,
+              labelX = void 0,
+              labelY = void 0;
+
+          var labelOffset = typeof c.labelOffset != 'undefined' ? c.labelOffset : {};
+          var labelOffsetLeft = typeof labelOffsetAllRegions.left != 'undefined' ? typeof labelOffset.left != 'undefined' ? labelOffset.left : labelOffsetAllRegions.left : 20;
+          var labelOffsetTop = typeof labelOffsetAllRegions.top != 'undefined' ? typeof labelOffset.top != 'undefined' ? labelOffset.top : labelOffsetAllRegions.top : 0;
+          var fillOpacity = typeof styling.fillOpacity != 'undefined' ? typeof c.fillOpacity != 'undefined' ? c.fillOpacity : styling.fillOpacity : 0.5;
+
+          y1 = chart.yscale(c.from);
+          y2 = chart.yscale(c.to);
+
+          x = 0;
+          y = y1;
+          height = y2 - y1;
+          width = chartArea.x.max;
+
+          labelX = labelOffsetLeft;
+          labelY = y2 + labelOffsetTop;
+
+          var regionLabel = typeof c.label != 'undefined' ? _react2.default.createElement(
+            _reactNativeSvg.Text,
+            { fontFamily: textStyle.fontFamily,
+              fontSize: textStyle.fontSize,
+              fontWeight: textStyle.fontWeight,
+              fontStyle: textStyle.fontStyle,
+              fill: textStyle.fill,
+              textAnchor: 'middle',
+              x: labelX,
+              y: labelY, __source: {
+                fileName: _jsxFileName,
+                lineNumber: 204
+              }
+            },
+            c.label
+          ) : null;
+
+          return _react2.default.createElement(
+            _reactNativeSvg.G,
+            { key: 'region' + i, __source: {
+                fileName: _jsxFileName,
+                lineNumber: 215
+              }
+            },
+            _react2.default.createElement(_reactNativeSvg.Rect, { key: 'region' + i, x: x, y: y, width: width, height: height,
+              fill: c.fill, fillOpacity: fillOpacity, __source: {
+                fileName: _jsxFileName,
+                lineNumber: 216
+              }
+            }),
+            regionLabel
+          );
+        }.bind(this));
+      }
+
+      var returnValue = _react2.default.createElement(
+        _reactNativeSvg2.default,
+        { width: options.width, height: options.height, __source: {
+            fileName: _jsxFileName,
+            lineNumber: 224
+          }
+        },
+        _react2.default.createElement(
+          _reactNativeSvg.G,
+          { x: options.margin.left, y: options.margin.top, __source: {
+              fileName: _jsxFileName,
+              lineNumber: 225
+            }
+          },
+          regions,
+          areas,
+          lines,
+          circles,
+          _react2.default.createElement(_Axis2.default, { key: 'x', scale: chart.xscale, options: options.axisX, chartArea: chartArea, __source: {
+              fileName: _jsxFileName,
+              lineNumber: 230
+            }
+          }),
+          _react2.default.createElement(_Axis2.default, { key: 'y', scale: chart.yscale, options: options.axisY, chartArea: chartArea, __source: {
+              fileName: _jsxFileName,
+              lineNumber: 231
+            }
+          })
+        )
+      );
+
+      return returnValue;
+    }
+  }]);
+  return LineChart;
+}(_react.Component);
+
+exports.default = LineChart;

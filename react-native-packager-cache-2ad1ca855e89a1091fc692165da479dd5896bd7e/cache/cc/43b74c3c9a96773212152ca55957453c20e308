@@ -1,0 +1,64 @@
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _Line = require('./Line');
+
+var _Line2 = babelHelpers.interopRequireDefault(_Line);
+
+var SmoothLine = require('paths-js/smooth-line');
+
+var SmoothLineChart = function (_LineChart) {
+  babelHelpers.inherits(SmoothLineChart, _LineChart);
+
+  function SmoothLineChart(props) {
+    babelHelpers.classCallCheck(this, SmoothLineChart);
+    return babelHelpers.possibleConstructorReturn(this, (SmoothLineChart.__proto__ || Object.getPrototypeOf(SmoothLineChart)).call(this, props, SmoothLine));
+  }
+
+  return SmoothLineChart;
+}(_Line2.default);
+
+SmoothLineChart.defaultProps = {
+
+  options: {
+    width: 600,
+    height: 600,
+    color: '#2980B9',
+    margin: { top: 40, left: 60, bottom: 50, right: 20 },
+    animate: {
+      type: 'delayed',
+      duration: 200,
+      fillTransition: 3
+    },
+    axisX: {
+      showAxis: true,
+      showLines: true,
+      showLabels: true,
+      showTicks: true,
+      zeroAxis: false,
+      orient: 'bottom',
+      label: {
+        fontFamily: 'Arial',
+        fontSize: 14,
+        bold: true,
+        color: '#34495E'
+      }
+    },
+    axisY: {
+      showAxis: true,
+      showLines: true,
+      showLabels: true,
+      showTicks: true,
+      zeroAxis: false,
+      orient: 'left',
+      label: {
+        fontFamily: 'Arial',
+        fontSize: 14,
+        bold: true,
+        color: '#34495E'
+      }
+    }
+  }
+};
+exports.default = SmoothLineChart;

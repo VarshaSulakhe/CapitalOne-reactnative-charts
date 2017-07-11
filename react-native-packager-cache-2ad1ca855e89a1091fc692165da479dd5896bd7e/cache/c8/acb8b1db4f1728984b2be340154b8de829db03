@@ -1,0 +1,207 @@
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.Options = exports.Colors = exports.fontAdapt = exports.styleSvg = exports.color = exports.identity = exports.cyclic = undefined;
+
+var _lodash = require('lodash');
+
+var _lodash2 = babelHelpers.interopRequireDefault(_lodash);
+
+var cyclic = exports.cyclic = function cyclic(coll, i) {
+  return coll[i % coll.length];
+};
+var identity = exports.identity = function identity(key) {
+  return function (x) {
+    return x[key];
+  };
+};
+var color = exports.color = function color(key) {
+  return function (x) {
+    return x[key];
+  };
+};
+
+var styleSvg = exports.styleSvg = function styleSvg() {
+  var style = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
+  var sourceProps = arguments[1];
+
+  if (sourceProps === undefined) return style;
+
+  if (sourceProps.fill) {
+    style.fill = _lodash2.default.isString(sourceProps.fill) ? sourceProps.fill : sourceProps.fill.color;
+    style.fillOpacity = sourceProps.fill.alpha ? sourceProps.fill.alpha / 100 : 1;
+  }
+  if (sourceProps.stroke) {
+    style.stroke = _lodash2.default.isString(sourceProps.stroke) ? sourceProps.stroke : sourceProps.stroke.color;
+    style.strokeOpacity = sourceProps.stroke.alpha ? sourceProps.stroke.alpha / 100 : 1;
+  }
+  if (sourceProps.strokeWidth) style.strokeWidth = sourceProps.strokeWidth;
+  return style;
+};
+
+var fontAdapt = exports.fontAdapt = function fontAdapt(fontProps) {
+
+  var fill = fontProps.color ? _lodash2.default.isString(fontProps.color) ? fontProps.color : fontProps.color.color : fontProps.fill;
+
+  return {
+    fontFamily: fontProps.fontFamily,
+    fontSize: fontProps.fontSize,
+    rotate: fontProps.rotate || 0,
+    fontWeight: fontProps.fontWeight ? 'bold' : 'normal',
+    fontStyle: fontProps.fontStyle ? 'italic' : 'normal',
+    fill: fill
+  };
+};
+
+var colours = function () {
+  function colours() {
+    babelHelpers.classCallCheck(this, colours);
+  }
+
+  babelHelpers.createClass(colours, [{
+    key: 'cut',
+    value: function cut(x) {
+      return Math.min(255, Math.floor(Math.abs(x)));
+    }
+  }, {
+    key: 'multiply',
+    value: function multiply(factor) {
+      return function (c) {
+        return {
+          r: this.cut(factor * c.r),
+          g: this.cut(factor * c.g),
+          b: this.cut(factor * c.b)
+        };
+      }.bind(this);
+    }
+  }, {
+    key: 'average',
+    value: function average(c1, c2) {
+      return {
+        r: this.cut((c1.r + c2.r) / 2),
+        g: this.cut((c1.g + c2.g) / 2),
+        b: this.cut((c1.b + c2.b) / 2)
+      };
+    }
+  }, {
+    key: 'lighten',
+    value: function lighten(c) {
+      return this.multiply(1.2)(c);
+    }
+  }, {
+    key: 'darken',
+    value: function darken(c) {
+      return this.multiply(0.8)(c);
+    }
+  }, {
+    key: 'darkenColor',
+    value: function darkenColor(c) {
+      return this.string(this.darken(this.hexToRgb(c)));
+    }
+  }, {
+    key: 'mix',
+    value: function mix(color1) {
+      var c1 = this.hexToRgb(color1);
+      var c2 = this.multiply(0.5)(c1);
+      var c3 = this.average(c1, c2);
+      return [this.lighten(c1), c1, this.darken(c1), this.lighten(c3), c3, this.darken(c3), this.lighten(c2), c2, this.darken(c2)];
+    }
+  }, {
+    key: 'string',
+    value: function string(c) {
+      return this.rgbToHex(Math.floor(c.r), Math.floor(c.g), Math.floor(c.b));
+    }
+  }, {
+    key: 'hexToRgb',
+    value: function hexToRgb(hex) {
+      var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+      return result ? {
+        r: parseInt(result[1], 16),
+        g: parseInt(result[2], 16),
+        b: parseInt(result[3], 16)
+      } : null;
+    }
+  }, {
+    key: 'componentToHex',
+    value: function componentToHex(c) {
+      var hex = c.toString(16);
+      return hex.length == 1 ? '0' + hex : hex;
+    }
+  }, {
+    key: 'rgbToHex',
+    value: function rgbToHex(r, g, b) {
+      return '#' + this.componentToHex(r) + this.componentToHex(g) + this.componentToHex(b);
+    }
+  }]);
+  return colours;
+}();
+
+var Colors = exports.Colors = new colours();
+
+var Options = exports.Options = function () {
+  function Options(props) {
+    babelHelpers.classCallCheck(this, Options);
+
+    this.props = props;
+    this.options = props.options || {};
+    this.chartWidth = props.width || this.options.width || 400;
+    this.chartHeight = props.height || this.options.height || 400;
+    this.width = this.chartWidth + (this.margin.right || 0) + (this.margin.left || 0);
+    this.height = this.chartHeight + (this.margin.top || 0) + (this.margin.bottom || 0);
+    this.min = props.min || this.options.min;
+    this.max = props.max || this.options.max;
+  }
+
+  babelHelpers.createClass(Options, [{
+    key: 'legendPosition',
+    get: function get() {
+      return this.props.legendPosition || this.props.options && this.props.options.legendPosition || 'topLeft';
+    }
+  }, {
+    key: 'axisX',
+    get: function get() {
+      return this.props.axisX || this.props.options && this.props.options.axisX || {};
+    }
+  }, {
+    key: 'axisY',
+    get: function get() {
+      return this.props.axisY || this.props.options && this.props.options.axisY || {};
+    }
+  }, {
+    key: 'margin',
+    get: function get() {
+      return this.props.margin || this.props.options && this.props.options.margin || {};
+    }
+  }, {
+    key: 'stroke',
+    get: function get() {
+      return this.props.stroke || this.props.options && this.props.options.stroke;
+    }
+  }, {
+    key: 'fill',
+    get: function get() {
+      return this.props.fill || this.props.options && this.props.options.fill;
+    }
+  }, {
+    key: 'r',
+    get: function get() {
+      return this.props.r || this.props.options && this.props.options.r;
+    }
+  }, {
+    key: 'R',
+    get: function get() {
+      return this.props.R || this.props.options && this.props.options.R;
+    }
+  }, {
+    key: 'label',
+    get: function get() {
+      return this.props.label || this.props.options && this.props.options.label || {};
+    }
+  }, {
+    key: 'animate',
+    get: function get() {
+      return this.props.animate || this.props.options && this.props.options.animate || {};
+    }
+  }]);
+  return Options;
+}();

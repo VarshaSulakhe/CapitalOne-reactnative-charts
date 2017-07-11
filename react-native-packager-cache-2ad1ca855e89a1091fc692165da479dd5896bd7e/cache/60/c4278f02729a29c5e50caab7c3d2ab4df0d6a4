@@ -1,0 +1,39 @@
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _react = require('react');
+
+var _propTypes = require('prop-types');
+
+var _propTypes2 = babelHelpers.interopRequireDefault(_propTypes);
+
+var _props = require('../lib/props');
+
+var _class = function (_Component) {
+    babelHelpers.inherits(_class, _Component);
+
+    function _class() {
+        babelHelpers.classCallCheck(this, _class);
+        return babelHelpers.possibleConstructorReturn(this, (_class.__proto__ || Object.getPrototypeOf(_class)).apply(this, arguments));
+    }
+
+    babelHelpers.createClass(_class, [{
+        key: 'render',
+        value: function render() {
+            return null;
+        }
+    }]);
+    return _class;
+}(_react.Component);
+
+_class.displayName = 'Stop';
+_class.propTypes = {
+    stopColor: _propTypes2.default.string,
+    stopOpacity: _props.numberProp
+};
+_class.defaultProps = {
+    stopColor: '#000',
+    stopOpacity: 1
+};
+exports.default = _class;
