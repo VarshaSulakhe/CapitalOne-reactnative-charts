@@ -24,12 +24,15 @@ const Pathjs = require('paths-js/path')
 
 class AxisStruct {
 
-  constructor(scale, options, chartArea, horizontal) {
+  constructor(scale, options, chartArea, horizontal, mx) {
     this.scale = scale
     this.options = options
     this.chartArea = chartArea
     this.margin = chartArea.margin
     this.horizontal = horizontal
+    this.mx = mx
+
+    console.log("AxisStruct");
   }
 
   static calcStepSize(range, targetSteps)
@@ -54,46 +57,31 @@ class AxisStruct {
   }
 
   static getTickValues(axis, tickCount, decimalPlaces) {
-    console.log("tick Count : "+tickCount)
-    console.log("axis minValue: "+axis.minValue)
-    console.log("axis maxValue: "+axis.maxValue)
-    console.log("decimalPlaces "+decimalPlaces)
     const tickStep = AxisStruct.calcStepSize((axis.maxValue - axis.minValue),tickCount)
-    console.log("tickStep : "+tickStep)
     const maxTick = axis.minValue + (tickCount * tickStep)
     let tickValues = _.range(axis.minValue, maxTick, tickStep)
     tickValues = tickValues.map(tickValue => {
       return AxisStruct.roundFloat(tickValue, decimalPlaces)
     })
     
-    console.log("tickValues : "+tickValues)
-   
-    console.log("tickValues length: "+tickValues.length)
-    console.log(tickValues[tickValues.length-1])
     return tickValues
   }
 
   axis() {
 
     const horizontal = this.horizontal
-    console.log("horizontal : "+horizontal)
     const xAxis = this.chartArea.x
-    console.log("XAxis min: "+xAxis.min+" xAxis max "+xAxis.max)
-
 
     const yAxis = this.chartArea.y
-    console.log("yAxis min: "+yAxis+" yAxis max: "+yAxis.max)
     const currentAxis = horizontal?xAxis:yAxis
-    console.log("currentAxis "+currentAxis)
     const tickInterval = this.options.tickCount || 10
-    console.log("tickInterval : "+tickInterval)
     
 
     const decimalPlaces = this.options.decimalPlaces || 2
     const ticks = this.options.tickValues !== undefined && this.options.tickValues.length !== 0? _.map(this.options.tickValues,function(v){ return v.value }):AxisStruct.getTickValues(currentAxis, tickInterval, decimalPlaces)
     const fixed = this.options.zeroAxis?this.scale(0):horizontal?yAxis.min:xAxis.min
     const start = {x: horizontal?xAxis.min:fixed, y: horizontal?fixed:yAxis.min}
-    const end = {x:horizontal?xAxis.max:fixed,y: horizontal?fixed:yAxis.max}
+    const end = {x:horizontal?this.mx:fixed,y: horizontal?fixed:yAxis.max}
     const tailLength = this.options.tailLength || 10
 
     const margin = this.margin
@@ -119,8 +107,7 @@ class AxisStruct {
       lines: ticks.map((c,i) => {
         let scaleBase = isNaN(c) ? i : c
         const lineStart = {x: horizontal ? this.scale(scaleBase) + margin.left : xAxis.min + margin.left, y: horizontal ? yAxis.min + margin.top : this.scale(scaleBase) + margin.top}
-        return Pathjs().moveto(lineStart).lineto(horizontal ? lineStart.x : xAxis.max + margin.left, horizontal ? yAxis.max + (margin.top - tailLength) : lineStart.y)
-      },this)
+        return Pathjs().moveto(lineStart).lineto(horizontal ? lineStart.x :this.mx , horizontal ? yAxis.max + (margin.top - tailLength) : lineStart.y)},this)
 
     }
 
@@ -130,11 +117,10 @@ class AxisStruct {
 export default class Axis extends Component {
 
   render() {
-    console.log("Axis")
-    const { chartArea, options, scale } = this.props
+    const { chartArea, options, scale, mx } = this.props
     const horizontal = options.orient ==='top' || options.orient ==='bottom'
 
-    const axis = new AxisStruct(scale,options,chartArea,horizontal).axis()
+    const axis = new AxisStruct(scale,options,chartArea,horizontal, mx).axis()
 
     let textAnchor = 'start'
     if (options.orient === 'top' || options.orient === 'bottom') textAnchor = 'middle'
@@ -175,12 +161,8 @@ export default class Axis extends Component {
 
     const ticks =_.map(axis.ticks, function (c, i) {
       const label = options.labelFunction !== undefined? options.labelFunction.apply(this, [c]) : c
-      console.log("label : "+label)
       let scaleBase = isNaN(c) ? i : c
       let gxy = horizontal ? [scale(scaleBase),chartArea.y.min]:[chartArea.x.min,scale(scaleBase)]
-      console.log("gxy "+gxy)
-     
-
 
       let returnValue
       if (label !== undefined && label !== null) {

@@ -16,6 +16,7 @@ const styles = StyleSheet.create({
 });
 
 class StocklineChart extends Component {
+
   static navigationOptions = ({ navigation }) => ({
     title: `StockLine - Basic`,
   });
@@ -36,21 +37,6 @@ class StocklineChart extends Component {
       }, {
         "x": 4,
         "y": 58257
-      }, {
-        "x": 5,
-        "y": 40579
-      },{
-        "x": 6,
-        "y": 10000
-      },{
-        "x": 7,
-        "y": 38976
-      },{
-        "x": 8,
-        "y": 40579
-      },{
-        "x": 9,
-        "y": 41234
       }]
     ]
     
@@ -101,18 +87,12 @@ class StocklineChart extends Component {
     }
 
     return (
-      <ScrollView  
-          horizontal={true}
-          scrollEnabled={true}
-        >
-          
-                      
       <View style={styles.container}>
         <StockLine data={data} options={options} xKey='x' yKey='y' />
       </View>
-         </ScrollView>
     )
   }
 }
+
 
 export default StocklineChart;
